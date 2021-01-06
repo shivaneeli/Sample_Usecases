@@ -110,10 +110,66 @@ view: order_items {
   }
 
   measure: cumulative_total_sales {
-    type: sum
+    type: number
     description: "Cumulative Total Sales"
-    sql: sum (${sale_price} over ( order by ${order_id}) ;;
+    sql: ${sale_price} ;;
+
+    #running_total(${sale_price})+ coalesce(sum(pivot_offset_list((offset_list(${sale_price},1-row(),max(row())),1-pivot_column(),pivot_column()-1)),0);;
+
   }
+
+  measure: total_gross_revenue {
+    type: sum
+    description: "Total Gross Revenue"
+    sql: case when ${status} not in ('Cancelled', 'Returned') then ${sale_price} end;;
+  }
+
+  measure: total_gross_margin_amount{
+    type: sum
+    description: "Total difference between the total revenue from completed sales and the cost of the goods that were sold"
+    sql: (${sale_price} - ${inventory_items.cost})  ;;
+  }
+  measure: average_gross_margin {
+    type: average
+    sql: ${sale_price} - ${inventory_items.cost} ;;
+  }
+
+  measure: gross_margin_percent {
+    type: number
+    sql: ${total_gross_margin_amount}/nullif(${total_gross_revenue},0) ;;
+  }
+
+  measure: number_of_items_returned {
+    type: number
+    description: "Number of items that were returned by dissatisfied customers"
+    sql: case when ${status} in ('Returned') then ${count} end;  ;;
+  }
+
+  measure: item_return_rate {
+    type: number
+    description: "Number of Items Returned / total number of items sold"
+    sql: ${number_of_items_returned}/nullif(${count},0) ;;
+  }
+
+  measure: number_of_customers_returning_items {
+    type: count_distinct
+    description: "Number of users who have returned an item at some point"
+    sql: case when ${status} in ('Returned') then ${user_id} end;;
+  }
+
+  measure: percent_of_users_with_returns {
+    type: number
+    description: "Number of Customer Returning Items / total number of customers"
+    sql: ${number_of_customers_returning_items}/nullif(${users.count},0) ;;
+  }
+
+  measure: average_spend_per_customer {
+    type: number
+    description: "Total Sale Price / total number of customers"
+    sql: ${total_sale_price}/nullif(${users.count},0) ;;
+  }
+
+
 
 
   # ----- Sets of fields for drilling ------

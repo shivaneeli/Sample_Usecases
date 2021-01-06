@@ -15,4 +15,8 @@ explore: order_items {
     relationship: many_to_one
     sql_on: ${users.id} = ${order_items.user_id};;
   }
+  join: inventory_items {
+    relationship: many_to_one
+    sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
+  }
 }
