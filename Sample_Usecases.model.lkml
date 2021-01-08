@@ -19,4 +19,8 @@ explore: order_items {
     relationship: many_to_one
     sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
   }
+  join: customer_life_time_value {
+    relationship: one_to_one
+    sql_on: ${users.id} = ${customer_life_time_value.user_id} ;;
+  }
 }

@@ -122,6 +122,7 @@ view: order_items {
     type: sum
     description: "Total Gross Revenue"
     sql: case when ${status} not in ('Cancelled', 'Returned') then ${sale_price} end;;
+    value_format_name: usd
   }
 
   measure: total_gross_margin_amount{
@@ -169,7 +170,11 @@ view: order_items {
     sql: ${total_sale_price}/nullif(${users.count},0) ;;
   }
 
-
+   measure: order_count  {
+     type: count_distinct
+    description: "Disctinct Order Count"
+    sql: ${order_id} ;;
+   }
 
 
   # ----- Sets of fields for drilling ------

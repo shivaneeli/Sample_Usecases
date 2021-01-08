@@ -13,7 +13,12 @@ view: users {
     type: number
     sql: ${TABLE}."AGE" ;;
   }
-
+  dimension: age_group {
+    type: tier
+    tiers: [15,26,36,51,65]
+    style: integer
+    sql: ${age} ;;
+  }
   dimension: city {
     type: string
     sql: ${TABLE}."CITY" ;;
@@ -30,6 +35,7 @@ view: users {
     timeframes: [
       raw,
       time,
+      day_of_month,
       date,
       week,
       month,
@@ -38,7 +44,10 @@ view: users {
     ]
     sql: ${TABLE}."CREATED_AT" ;;
   }
-
+  dimension: is_mtd {
+    type: yesno
+    sql: extract(day from ${created_raw})<= extract(day from CURRENT_DATE)  ;;
+  }
   dimension: email {
     type: string
     sql: ${TABLE}."EMAIL" ;;
@@ -83,6 +92,7 @@ view: users {
     type: zipcode
     sql: ${TABLE}."ZIP" ;;
   }
+
 
   measure: count {
     type: count
