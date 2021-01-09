@@ -23,6 +23,15 @@ view: order_items {
     sql: ${TABLE}."CREATED_AT" ;;
   }
 
+ measure: first_order_date {
+   type: date
+  sql: min(${created_date}) ;;
+ }
+
+  measure: latest_order_date {
+    type: date
+    sql: max(${created_date}) ;;
+  }
   dimension_group: delivered {
     type: time
     timeframes: [
@@ -140,10 +149,19 @@ view: order_items {
     sql: ${total_gross_margin_amount}/nullif(${total_gross_revenue},0) ;;
   }
 
+  measure: average_time_to_ship {
+    type: average
+    sql: datediff(day,${created_date},  ${shipped_date}) ;;
+  }
+  measure: average_time_to_deliver {
+    type: average
+    sql: datediff(day,${created_date},  ${delivered_date}) ;;
+  }
+
   measure: number_of_items_returned {
-    type: number
+    type: count_distinct
     description: "Number of items that were returned by dissatisfied customers"
-    sql: case when ${status} in ('Returned') then ${count} end;  ;;
+    sql: case when ${status} in ('Returned') then ${id} end  ;;
   }
 
   measure: item_return_rate {
@@ -175,6 +193,7 @@ view: order_items {
     description: "Disctinct Order Count"
     sql: ${order_id} ;;
    }
+
 
 
   # ----- Sets of fields for drilling ------
