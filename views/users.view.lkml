@@ -55,17 +55,22 @@ view: users {
 
   dimension: first_name {
     type: string
-    sql: ${TABLE}."FIRST_NAME" ;;
+    sql: initcap(${TABLE}."FIRST_NAME") ;;
   }
 
   dimension: gender {
     type: string
-    sql: ${TABLE}."GENDER" ;;
+    sql: initcap(${TABLE}."GENDER") ;;
   }
 
   dimension: last_name {
     type: string
     sql: ${TABLE}."LAST_NAME" ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: ${first_name}||' '||${last_name} ;;
   }
 
   dimension: latitude {
@@ -93,7 +98,27 @@ view: users {
     sql: ${TABLE}."ZIP" ;;
   }
 
+  dimension_group: since_signup {
+    type: duration
+    intervals: [day,month,year]
+    sql_start: ${users.created_date}  ;;
+    sql_end: current_date ;;
+  }
 
+  dimension: months_since_joined {
+    type: number
+    sql: datediff(month, ${created_date}, current_date) ;;
+  }
+
+measure: average_days_since_signup {
+  type: average
+  sql: ${days_since_signup} ;;
+
+ }
+# measure: months_since_signup {
+#   type: average
+#   sql: ${months_since_signup} ;;
+# }
   measure: count {
     type: count
     drill_fields: [id, first_name, last_name, events.count, order_items.count]

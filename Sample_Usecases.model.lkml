@@ -13,14 +13,27 @@ explore: order_items {
 
   join: users {
     relationship: many_to_one
+    type: inner
     sql_on: ${users.id} = ${order_items.user_id};;
   }
   join: inventory_items {
     relationship: many_to_one
+    type: inner
     sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
   }
   join: customer_life_time_value {
     relationship: one_to_one
+    type: inner
     sql_on: ${users.id} = ${customer_life_time_value.user_id} ;;
   }
-}
+  join: usercounts_by_signup_duration {
+    relationship:one_to_one
+    type: inner
+    sql_on: ${usercounts_by_signup_duration.months_since_joined} =  ${users.months_since_joined};;
+    }
+  join: order_sequence {
+    relationship: one_to_one
+    type: left_outer
+    sql_on: ${order_items.order_id} = ${order_sequence.order_id} and ${order_items.user_id} = ${order_sequence.user_id} ;;
+  }
+  }
