@@ -55,22 +55,17 @@ view: users {
 
   dimension: first_name {
     type: string
-    sql: initcap(${TABLE}."FIRST_NAME") ;;
+    sql: ${TABLE}."FIRST_NAME" ;;
   }
 
   dimension: gender {
     type: string
-    sql: initcap(${TABLE}."GENDER") ;;
+    sql: ${TABLE}."GENDER" ;;
   }
 
   dimension: last_name {
     type: string
     sql: ${TABLE}."LAST_NAME" ;;
-  }
-
-  dimension: full_name {
-    type: string
-    sql: ${first_name}||' '||${last_name} ;;
   }
 
   dimension: latitude {
