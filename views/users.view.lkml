@@ -55,7 +55,7 @@ view: users {
 
   dimension: first_name {
     type: string
-    sql: ${TABLE}."FIRST_NAME" ;;
+    sql: initcap(${TABLE}."FIRST_NAME") ;;
   }
 
   dimension: gender {
@@ -68,6 +68,10 @@ view: users {
     sql: ${TABLE}."LAST_NAME" ;;
   }
 
+ dimension: full_name {
+   type: string
+   sql: ${first_name}||' '||${last_name} ;;
+ }
   dimension: latitude {
     type: number
     sql: ${TABLE}."LATITUDE" ;;
