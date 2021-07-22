@@ -40,4 +40,9 @@ explore: order_items {
     type: left_outer
     sql_on: ${order_items.order_id} = ${order_sequence.order_id} and ${order_items.user_id} = ${order_sequence.user_id} ;;
   }
+  join: products {
+    relationship: many_to_one
+    type: left_outer
+    sql_on: ${inventory_items.product_id} = ${products.id} ;;
+  }
   }
